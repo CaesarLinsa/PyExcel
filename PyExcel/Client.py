@@ -4,8 +4,8 @@ import os
 
 class Client(object):
     def __init__(self, wb, sheet=None, rows=None, cols=None):
-        if not wb.endswith("xlsx"):
-            wb = "%sxlsx" %wb
+        if not wb.endswith(".xlsx"):
+            wb = "%s.xlsx" %wb
         if os.path.exists(wb):
             self.wb = openpyxl.load_workbook(wb)
         else:
@@ -13,12 +13,15 @@ class Client(object):
         if sheet in self.wb.sheetnames:
             self.sheet = self.wb[sheet]
         else:
-            self.wb.create_sheet(sheet, 0)
+            self.sheet = self.wb.create_sheet(sheet, 0)
         self.rows = rows
         self.cols = cols
 
     def save(self, file):
+        if not file.endswith(".xlsx"):
+            file = "%s.xlsx" % file
         self.wb.save(file)
+
 
     def insert_row(self, stringrow):
         row=stringrow.split(',')

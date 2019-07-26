@@ -1,6 +1,6 @@
 import sys
 import argparse
-
+from util import args
 
 class shellmain(object):
 
@@ -14,10 +14,12 @@ class shellmain(object):
 
         parser.add_argument('-v','--version',
                             action='version',
-                            version='0.1'
+                            version='1.0'
                             )
         parser.add_argument('-h','--help',
-                            help="command pyexcel for help")
+                            action='store_true',
+                            help=argparse.SUPPRESS
+                            )
 
         return parser
 
@@ -26,40 +28,71 @@ class shellmain(object):
         modules = sys.modules[path]
         return modules
 
-    def get_subcommand_parser(self):
-        parser = self.get_base_parse()
-        subparser= parser.add_subparsers(metavar='<command>')
-        sub_modules = self.import_modules('PyExcel.PyExcel')
+    def _find_action(self, subparsers, sub_modules):
         for fn_name in (func for func in dir(sub_modules) if func.startswith('do_')):
             command = fn_name[3:].replace('_','-')
             callback = getattr(sub_modules,fn_name)
             desc=callback.__doc__ or ''
             help=desc.strip()
             arguments = getattr(callback,'arguments',[])
-            subparser_s = subparser.add_parser(
+            subparser = subparsers.add_parser(
                                              command,
+                                             help=help,
                                              description=desc,
                                              add_help=False
                                             )
+            subparser.add_argument('-h', '--help', action='help',
+                                               help=argparse.SUPPRESS)
+            self.subcommands[command] = subparser
             for (args,kwargs) in arguments:
-                subparser_s.add_argument(*args, **kwargs)
-            subparser_s.set_defaults(func=callback)
-        return parser
+                subparser.add_argument(*args, **kwargs)
+            subparser.set_defaults(func=callback)
 
-    def parse_args(self,argv):
+    def get_subcommand_parser(self):
+        # keep all the subcommand parsers
+        self.subcommands = {}
         parser = self.get_base_parse()
-        (option,args) = parser.parse_known_args(argv)
-        subcommand_parser= self.get_subcommand_parser()
-        return subcommand_parser.parse_args(argv)
+        subparser= parser.add_subparsers(metavar='<subcommand>')
+        sub_modules = self.import_modules('PyExcel.PyExcel')
+        self._find_action(subparser, sub_modules)
+        # add this module's do_help
+        self._find_action(subparser, self)
+        return parser
+    
+
+    @args('command', metavar='<subcommand>', nargs='?',
+               help='Display help for <subcommand>')
+    def do_help(self, args):
+        """Display help about this program or one of its subcommands."""
+        if getattr(args, 'command', None):
+            if args.command in self.subcommands:
+                self.subcommands[args.command].print_help()
+            else:
+                raise exc.CommandError("'%s' is not a valid subcommand" %
+                                       args.command)
+        else:
+            self.parser.print_help()
 
     def main(self,argv):
-        parsed = self.parse_args(argv)
-        parsed.func(parsed)
+        parser = self.get_base_parse()
+        (options, args) = parser.parse_known_args(argv)
+        subcommand_parser= self.get_subcommand_parser()
+        self.parser = subcommand_parser
+        # if inpute "pyexcel help" or "pyexcel"
+        # output the subcommand_parser's help 
+        # that function __doc__
+        if options.help or not argv:
+            self.do_help(options)
+            return 0
+        args= subcommand_parser.parse_args(argv)
+        if args.func == self.do_help:
+            self.do_help(args)
+            return 0
+        args.func(args)
 
 
 def main(argv=None):
-    if argv:
+    if argv is None:
         argv = sys.argv[1:]
+    shellmain().main(argv)
 
-    shell = shellmain()
-    shell.main(argv)
