@@ -1,6 +1,8 @@
 import sys
 import argparse
 from util import args
+from exc import CommandError
+
 
 class shellmain(object):
 
@@ -68,7 +70,7 @@ class shellmain(object):
             if args.command in self.subcommands:
                 self.subcommands[args.command].print_help()
             else:
-                raise exc.CommandError("'%s' is not a valid subcommand" %
+                raise CommandError("'%s' is not a valid subcommand" %
                                        args.command)
         else:
             self.parser.print_help()

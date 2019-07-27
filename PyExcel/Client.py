@@ -28,7 +28,10 @@ class Client(object):
         self.sheet.append(row)
 
     def get_head(self):
-        return list(self.sheet.iter_rows())[0]
+        rows=list(self.sheet.iter_rows())
+        if len(rows) == 0:
+            return []
+        return rows[0]
     
     def get_all(self):
         return list(self.sheet.iter_rows())
