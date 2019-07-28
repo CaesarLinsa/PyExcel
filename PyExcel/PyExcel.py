@@ -44,6 +44,24 @@ def do_get_col(args):
         col_list.append(d.value)
     pt = prettytable.PrettyTable()
     pt.align = 'l'
-    pt.add_column(col_list[0], col_list[0:])
+    pt.add_column(col_list[0], col_list[1:])
     print pt
-    
+
+@args('-f', '--file', metavar='<FILE>', help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheetname")
+@args('-col', '--col', metavar='<COL>', type=int, help="index of column")
+def do_get_all(args):
+    cc = Client(args.file, args.sheetname)
+    data = cc.get_all()
+    pt = prettytable.PrettyTable()
+    for i, row in enumerate(data):
+        row_list = []
+        for cell in row:
+            row_list.append(cell.value)
+        if i == 0:
+            pt.field_names = row_list
+        else:
+            pt.add_row(row_list)
+        pt.align = 'l'
+    print pt
+ 
