@@ -49,8 +49,8 @@ def do_get_col(args):
 
 @args('-f', '--file', metavar='<FILE>', help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheetname")
-@args('-col', '--col', metavar='<COL>', type=int, help="index of column")
 def do_get_all(args):
+    """ get all cell value of a Excel sheet"""
     cc = Client(args.file, args.sheetname)
     data = cc.get_all()
     pt = prettytable.PrettyTable()
