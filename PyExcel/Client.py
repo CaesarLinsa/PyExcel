@@ -41,3 +41,7 @@ class Client(object):
         for data in datas:
             col.append(data[num-1])
         return col
+
+    def get_sheet_names(self):
+        return [ sheetname for sheetname in self.wb.sheetnames if not
+        sheetname.startswith("Sheet")]

@@ -54,3 +54,6 @@ class TestClient(unittest.TestCase):
             ret = self.client.get_all()
             self.assertEqual([(2,3,4),(4,5,6)], ret)
 
+    def test_get_sheet_names(self):
+        self.client.get_sheet_names()
+        self.client.wb.get_sheet_names.assert_called

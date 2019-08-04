@@ -64,4 +64,13 @@ def do_get_all(args):
             pt.add_row(row_list)
         pt.align = 'l'
     print pt
- 
+
+@args('-f', '--file', metavar='<FILE>', help="Excel file name")
+def do_sheet_names(args):
+    """ get Excel sheet names"""
+    cc = Client(args.file)
+    sheets = cc.get_sheet_names()
+    pt = prettytable.PrettyTable()
+    pt.field_names = sheets
+    pt.align = "1"
+    print pt
