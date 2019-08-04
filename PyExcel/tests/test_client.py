@@ -9,15 +9,22 @@ class TestClient(unittest.TestCase):
           'wb': 'caesar'
      }
     def setUp(self):
-        with mock.patch("PyExcel.Client.openpyxl") as mock_openpyxl:
-            with mock.patch("PyExcel.Client.Workbook") as mock_wb:
+        with mock.patch("PyExcel.Client.openpyxl"):
+            with mock.patch("PyExcel.Client.Workbook"):
                 self.client = Client(**self.client_kargs)
-        
+    
     def test_save(self):
-        file='caesar'
-        f_save = mock.Mock(side_effect=Client.save)
-        f_save(self.client, file)
-        f_save.assert_called_with(self.client, file)
+        file = "caesar.xlsx"
+        self.client.save(file)
+        self.client.wb.save.assert_called_with(file)
+        file = "caesar"
+        self.client.save(file)
+        self.client.wb.save.assert_called_with("%s.xlsx" % file)
+    
+    def test_insert_row(self):
+        content = "caesar,kafka"
+        self.client.insert_row(content)
+        self.client.sheet.append.assert_called_with(['caesar', 'kafka'])
 
     def test_get_head(self):
         rows=tuple()
@@ -31,3 +38,19 @@ class TestClient(unittest.TestCase):
             ret = self.client.get_head()
             self.assertEqual(len(ret), 3)
             self.assertEqual(ret, (2, 3, 4))
+
+    def test_get_col(self):
+        rows=((2, 3, 4),(4, 5, 6))
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(mock.patch.object(self.client.sheet, 'iter_rows', return_value=rows))
+            ret = self.client.get_col(1)
+            self.assertEqual(len(ret), 2)
+            self.assertEqual([2,4], ret)
+   
+    def test_get_all(self):
+        rows=((2, 3, 4),(4, 5, 6))
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(mock.patch.object(self.client.sheet, 'iter_rows', return_value=rows))
+            ret = self.client.get_all()
+            self.assertEqual([(2,3,4),(4,5,6)], ret)
+

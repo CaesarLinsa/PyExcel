@@ -22,7 +22,6 @@ class Client(object):
             file = "%s.xlsx" % file
         self.wb.save(file)
 
-
     def insert_row(self, stringrow):
         row=stringrow.split(',')
         self.sheet.append(row)
