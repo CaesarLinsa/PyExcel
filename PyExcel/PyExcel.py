@@ -3,24 +3,24 @@ from Client import  Client
 import prettytable
 
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheet name")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
 def do_create_excel(args):
     """create a excel file"""
     cc = Client(args.file, args.sheetname)
     cc.save(args.file)
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheet name")
-@args('-r','--row',metavar='<ROW>', help='a row of data')
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
+@args('-r','--row',metavar='<ROW>', required=True,help='a row of data')
 def do_insert_row(args):
     """insert data into Excel for a row"""
     cc = Client(args.file, args.sheetname)
     cc.insert_row(args.row)
     cc.save(args.file)
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheet name")
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
 def do_get_head(args):
     """get the excel first line"""
     cc = Client(args.file, args.sheetname)
@@ -31,8 +31,8 @@ def do_get_head(args):
     pt = prettytable.PrettyTable(row_list)
     print pt
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheet name")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
 @args('-col', '--col', metavar='<COL>', type=int, help="index of column")
 @args('-colname', '--colname', metavar='<COLNAME>',help="name of colum")
 def do_get_col(args):
@@ -52,8 +52,8 @@ def do_get_col(args):
         pt.add_column(col_list[0], col_list[1:])
     print pt
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheetname")
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheetname")
 def do_get_all(args):
     """ get all cell value of a Excel sheet"""
     cc = Client(args.file, args.sheetname)
@@ -70,7 +70,7 @@ def do_get_all(args):
         pt.align = 'l'
     print pt
 
-@args('-f', '--file', metavar='<FILE>', help="Excel file name")
+@args('-f', '--file', metavar='<FILE>',required=True, help="Excel file name")
 def do_sheet_names(args):
     """ get Excel sheet names"""
     cc = Client(args.file)
