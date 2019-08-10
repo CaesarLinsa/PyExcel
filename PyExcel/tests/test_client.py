@@ -57,3 +57,20 @@ class TestClient(unittest.TestCase):
     def test_get_sheet_names(self):
         self.client.get_sheet_names()
         self.client.wb.get_sheet_names.assert_called
+
+    def test_get_col_id_by_name(self):
+        head_row = ["caesar","ciro" ,"bill", "merlin"]
+        with contextlib.ExitStack() as stack:
+             stack.enter_context(mock.patch.object(self.client, 'get_head_row',
+             return_value=head_row))
+             for index, head in enumerate(head_row):
+                 id = self.client.get_col_id_by_name(head)
+                 self.assertEqual(index,id)
+    
+   def test_get_sheet_id_by_name(self):
+       sheetnames = ["bill","ciro"]
+       with contextlib.ExitStack() as stack:
+           stack.enter_context(mock.patch.object(self.client,
+           'get_sheet_names', return_value=sheetnames))
+           id = self.client.get_sheet_id_by_name("ciro")
+           self.assertEqual(id, 1)

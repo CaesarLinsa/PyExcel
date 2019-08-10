@@ -3,7 +3,7 @@ import openpyxl
 import os
 
 class Client(object):
-    def __init__(self, wb, sheet=None, rows=None, cols=None):
+    def __init__(self, wb, sheet=None):
         if not wb.endswith(".xlsx"):
             wb = "%s.xlsx" %wb
         if os.path.exists(wb):
@@ -14,8 +14,8 @@ class Client(object):
             self.sheet = self.wb[sheet]
         else:
             self.sheet = self.wb.create_sheet(sheet, 0)
-        self.rows = rows
-        self.cols = cols
+        self.rows = list(self.sheet.iter_rows())
+        self.head_row = list(self.rows[0]) if self.rows else []
 
     def save(self, file):
         if not file.endswith(".xlsx"):
@@ -27,21 +27,29 @@ class Client(object):
         self.sheet.append(row)
 
     def get_head(self):
-        rows=list(self.sheet.iter_rows())
-        if len(rows) == 0:
-            return []
-        return rows[0]
+        return self.head_row
     
     def get_all(self):
-        return list(self.sheet.iter_rows())
+        return list(self.rows)
 
     def get_col(self, num):
-        datas = list(self.sheet.iter_rows())
+        datas = list(self.rows)
         col = []
         for data in datas:
-            col.append(data[num-1])
+            col.append(data[num])
         return col
 
     def get_sheet_names(self):
         return [ sheetname for sheetname in self.wb.sheetnames if not
         sheetname.startswith("Sheet")]
+
+    def get_col_id_by_name(self, col_name):
+        for index, colname in enumerate(self.head_row):
+            if col_name == colname.value:
+                return index
+   
+    def get_sheet_id_by_name(self, sheet_name):
+        for index, sheetname in enumerate(self.wb.sheetnames):
+            if sheetname == sheet_name:
+                return index
+

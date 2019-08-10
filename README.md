@@ -16,6 +16,7 @@ python setup.py install
 
 #### you can use pyexcel, pyexcel hep or pyexcel --help to get the help info, as below:
 
+```
 positional arguments:
   <subcommand>
     create-excel  create a excel file
@@ -26,9 +27,9 @@ positional arguments:
 
 optional arguments:
   -v, --version  show program's version number and exit
-
+```
 #### you can use pyexcel help subcommand to get the subcommand info, for example:
-
+```
 pyexcel  help create-excel
 
 usage: pyexcel create-excel [-f <FILE>] [-sn <SHEETNAME>]
@@ -40,3 +41,4 @@ optional arguments:
                    Excel file name
   -sn <SHEETNAME>, --sheetname <SHEETNAME>
                    Excel file sheet name
+```

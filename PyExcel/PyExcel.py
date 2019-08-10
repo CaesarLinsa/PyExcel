@@ -29,22 +29,27 @@ def do_get_head(args):
     for cell in row:
         row_list.append(cell.value)
     pt = prettytable.PrettyTable(row_list)
-    pt.align = 'l'
     print pt
 
 @args('-f', '--file', metavar='<FILE>', help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', help="Excel file sheet name")
 @args('-col', '--col', metavar='<COL>', type=int, help="index of column")
+@args('-colname', '--colname', metavar='<COLNAME>',help="name of colum")
 def do_get_col(args):
     """ get a column data of Excel"""
     cc = Client(args.file, args.sheetname)
-    data = cc.get_col(args.col)
+    if args.colname:
+        col_id = cc.get_col_id_by_name(args.colname)
+        data = cc.get_col(col_id)
+    else:
+        data = cc.get_col(args.col)
     col_list = []
     for d in data:
         col_list.append(d.value)
     pt = prettytable.PrettyTable()
     pt.align = 'l'
-    pt.add_column(col_list[0], col_list[1:])
+    if col_list:
+        pt.add_column(col_list[0], col_list[1:])
     print pt
 
 @args('-f', '--file', metavar='<FILE>', help="Excel file name")
