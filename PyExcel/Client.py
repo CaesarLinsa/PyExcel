@@ -15,7 +15,7 @@ class Client(object):
         else:
             self.sheet = self.wb.create_sheet(sheet, 0)
         self.rows = list(self.sheet.iter_rows())
-        self.head_row = list(self.rows[0]) if self.rows else []
+        self.head_row = list(self.rows)[0] if self.rows else []
 
     def save(self, file):
         if not file.endswith(".xlsx"):
