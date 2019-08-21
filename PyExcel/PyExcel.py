@@ -28,6 +28,16 @@ def raw_print_all(data):
             print(" ".join([ i for i in row_list if i ]))
 
 
+def write_csv_data(data, csv_file):
+    with open(csv_file, 'a+') as f:
+        for i, row in enumerate(data):
+            row_list = []
+            for cell in row:
+              row_list.append(cell.value)
+            f.write("{}\n".format(",".join([ cell if cell else '' for cell in
+            row_list])))
+
+
 def pretty_print_row(data):
     pt = prettytable.PrettyTable(data)
     pt.align = 'l'
@@ -130,3 +140,11 @@ def do_sheet_names(args):
     else:
         raw_print_row(sheets)
 
+
+@args('-f', '--file', metavar='<FILE>',required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>',help="the sheetname transfer to csv")
+def do_transfer2csv(args):
+    """ transfer excel sheet to csv"""
+    cc = Client(args.file, args.sheetname)
+    csv_raw_data = cc.get_all()
+    write_csv_data(csv_raw_data, "%s.csv" %args.sheetname)
