@@ -1,7 +1,7 @@
 from util import args
 from Client import  Client
 import prettytable
-
+import json
 
 def pretty_print_all(data):
     pt = prettytable.PrettyTable()
@@ -148,3 +148,35 @@ def do_transfer2csv(args):
     cc = Client(args.file, args.sheetname)
     csv_raw_data = cc.get_all()
     write_csv_data(csv_raw_data, "%s.csv" %args.sheetname)
+
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheetname")
+@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+def do_get_all_json(args):
+    """ get all cell value of a Excel sheet format json"""
+    cc = Client(args.file, args.sheetname)
+    data = cc.get_all_json()
+    if args.pretty:
+        print(json.dumps(data, indent=4, sort_keys=True))
+    else:
+        print(json.dumps(data))
+
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
+@args('-r','--row',metavar='<ROW>', required=True, help='a json of row. for example [{"colname":"cell_value"}]')
+def do_insert_json_rows(args):
+    """insert data into Excel for a row by json"""
+    cc = Client(args.file, args.sheetname)
+    row=args.row.replace("{","{\"").replace("}","\"}").replace(",","\",\"").replace(":","\":\"").replace("}\",\"{","},{")
+    data = json.loads(row)
+    cc.insert_json_rows(data)
+    cc.save(args.file)
+
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
+@args('-col','--colname',metavar='<COLNAME>', required=True,help='a colname of sheet')
+def do_delete_col(args):
+    """delete Excel sheet col by colname"""
+    cc = Client(args.file, args.sheetname)
+    cc.delete_col(args.colname)
+    cc.save(args.file)
