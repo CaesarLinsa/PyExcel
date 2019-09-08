@@ -167,7 +167,7 @@ def do_get_all_json(args):
 def do_insert_json_rows(args):
     """insert data into Excel for a row by json"""
     cc = Client(args.file, args.sheetname)
-    row=args.row.replace("{","{\"").replace("}","\"}").replace(",","\",\"").replace(":","\":\"").replace("}\",\"{","},{")
+    row=args.row.replace(" ","").replace("{","{\"").replace("}","\"}").replace(",","\",\"").replace(":","\":\"").replace("}\",\"{","},{")
     data = json.loads(row)
     cc.insert_json_rows(data)
     cc.save(args.file)
