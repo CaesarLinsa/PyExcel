@@ -186,6 +186,7 @@ def do_delete_col(args):
 @args('-rn','--rownum',metavar='<ROWNUMBER>', required=True,help='the first row number')
 @args('-r','--row',metavar='<ROW>', required=True, help='a row of data')
 def do_update_row(args):
+    """ update role data by row number start with 1 """
     cc = Client(args.file, args.sheetname)
     cc.update_row(args.rownum, args.row)
     cc.save(args.file)
