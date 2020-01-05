@@ -180,3 +180,13 @@ def do_delete_col(args):
     cc = Client(args.file, args.sheetname)
     cc.delete_col(args.colname)
     cc.save(args.file)
+
+@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
+@args('-rn','--rownum',metavar='<ROWNUMBER>', required=True,help='the first row number')
+@args('-r','--row',metavar='<ROW>', required=True, help='a row of data')
+def do_update_row(args):
+    cc = Client(args.file, args.sheetname)
+    cc.update_row(args.rownum, args.row)
+    cc.save(args.file)
+

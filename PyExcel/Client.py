@@ -43,6 +43,22 @@ class Client(object):
         return [ sheetname for sheetname in self.wb.sheetnames if not
         sheetname.startswith("Sheet")]
 
+    def get_first_column_names(self):
+        row_names = []
+        max_row = self.sheet.max_row
+        for row_num in range(max_row):
+            row_names.append(self.sheet.cell(row_num+1, 1).value)
+        return row_names
+
+    def update_row(self, row_num, stringrow):
+        row = stringrow.split(",")
+        max_col = self.sheet.max_column
+        if len(row) == max_col:
+            for col_id in range(max_col):
+                self.sheet.cell(int(row_num), col_id+1, row[col_id])
+        else:
+            print("row length is %s and max column is %s" %(len(row), max_col))
+
     def get_col_id_by_name(self, col_name):
         for index, colname in enumerate(self.head_row):
             if col_name == colname.value:
