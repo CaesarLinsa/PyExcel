@@ -50,7 +50,7 @@ class Client(object):
             row_names.append(self.sheet.cell(row_num+1, 1).value)
         return row_names
 
-    def update_row(self, row_num, stringrow):
+    def update_row_by_rownum(self, row_num, stringrow):
         row = stringrow.split(",")
         max_col = self.sheet.max_column
         if len(row) == max_col:
@@ -58,6 +58,19 @@ class Client(object):
                 self.sheet.cell(int(row_num), col_id+1, row[col_id])
         else:
             print("row length is %s and max column is %s" %(len(row), max_col))
+
+    def get_colname_index(self, colname, colnames):
+        for index, cname in enumerate(colnames):
+            if str(cname) == str(colname):
+                return index + 1
+
+    def update_row_by_colname(self, colname, stringrow):
+        colnames = self.get_first_column_names()
+        index = self.get_colname_index(colname, colnames)
+        if index:
+            self.update_row_by_rownum(index, stringrow)
+        else:
+            print("%s not in excel" %colname) 
 
     def get_col_id_by_name(self, col_name):
         for index, colname in enumerate(self.head_row):

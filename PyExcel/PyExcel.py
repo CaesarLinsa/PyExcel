@@ -183,11 +183,15 @@ def do_delete_col(args):
 
 @args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-rn','--rownum',metavar='<ROWNUMBER>', required=True,help='the first row number')
+@args('-rn','--rownum',metavar='<ROWNUMBER>', help='the first col number')
 @args('-r','--row',metavar='<ROW>', required=True, help='a row of data')
+@args('-rname','--rowname',metavar='<ROWNAME>', help='the first col name')
 def do_update_row(args):
-    """ update role data by row number start with 1 """
+    """ update role data by row number start with 1 or rowname """
     cc = Client(args.file, args.sheetname)
-    cc.update_row(args.rownum, args.row)
+    if args.rownum:
+        cc.update_row_by_rownum(args.rownum, args.row)
+    else:
+        cc.update_row_by_colname(args.rowname, args.row)
     cc.save(args.file)
 
