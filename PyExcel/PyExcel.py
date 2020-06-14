@@ -1,7 +1,8 @@
-from util import args
-from Client import  Client
+from cli.util import args
+from .Client import Client
 import prettytable
 import json
+
 
 def pretty_print_all(data):
     pt = prettytable.PrettyTable()
@@ -14,7 +15,7 @@ def pretty_print_all(data):
         else:
             pt.add_row(row_list)
         pt.align = 'l'
-    print pt
+    print(pt)
 
 
 def raw_print_all(data):
@@ -23,9 +24,9 @@ def raw_print_all(data):
         for cell in row:
             row_list.append(cell.value)
         if i == 0:
-            print(" ".join([ i for i in row_list if i ]))
+            print(" ".join([i for i in row_list if i]))
         else:
-            print(" ".join([ i for i in row_list if i ]))
+            print(" ".join([i for i in row_list if i]))
 
 
 def write_csv_data(data, csv_file):
@@ -33,26 +34,26 @@ def write_csv_data(data, csv_file):
         for i, row in enumerate(data):
             row_list = []
             for cell in row:
-              row_list.append(cell.value)
-            f.write("{}\n".format(",".join([ cell if cell else '' for cell in
-            row_list])))
+                row_list.append(cell.value)
+            f.write("{}\n".format(",".join([cell if cell else '' for cell in
+                                            row_list])))
 
 
 def pretty_print_row(data):
     pt = prettytable.PrettyTable(data)
     pt.align = 'l'
-    print pt
+    print(pt)
 
 
 def raw_print_row(data):
-    print(" ".join([ i for i in data if i] ))
+    print(" ".join([i for i in data if i]))
 
 
 def pretty_print_col(col_list):
     pt = prettytable.PrettyTable()
     pt.add_column(col_list[0], col_list[1:])
     pt.align = 'l'
-    print pt
+    print(pt)
 
 
 def raw_print_col(col_list):
@@ -68,9 +69,9 @@ def do_create_excel(args):
     cc.save(args.file)
 
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-r','--row',metavar='<ROW>', required=True,help='a row of data')
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
+@args('-r', '--row', metavar='<ROW>', required=True, help='a row of data')
 def do_insert_row(args):
     """insert data into Excel for a row"""
     cc = Client(args.file, args.sheetname)
@@ -78,27 +79,27 @@ def do_insert_row(args):
     cc.save(args.file)
 
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
+@args('-pretty', '--pretty', action='store_true', default=False, help="pretty table for raw data")
 def do_get_head(args):
     """get the excel first line"""
     cc = Client(args.file, args.sheetname)
-    row=cc.get_head()
+    row = cc.get_head()
     row_list = []
     for cell in row:
         row_list.append(cell.value)
     if args.pretty:
-       pretty_print_row(row_list)
+        pretty_print_row(row_list)
     else:
-       raw_print_row(row_list)
+        raw_print_row(row_list)
 
 
 @args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
 @args('-col', '--col', metavar='<COL>', type=int, help="index of column")
-@args('-colname', '--colname', metavar='<COLNAME>',help="name of colum")
-@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+@args('-colname', '--colname', metavar='<COLNAME>', help="name of colum")
+@args('-pretty', '--pretty', action='store_true', default=False, help="pretty table for raw data")
 def do_get_col(args):
     """ get a column data of Excel"""
     cc = Client(args.file, args.sheetname)
@@ -111,14 +112,14 @@ def do_get_col(args):
     for d in data:
         col_list.append(d.value)
     if args.pretty:
-       pretty_print_col(col_list)
+        pretty_print_col(col_list)
     else:
-       raw_print_col(col_list)
+        raw_print_col(col_list)
 
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheetname")
-@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+@args('-pretty', '--pretty', action='store_true', default=False, help="pretty table for raw data")
 def do_get_all(args):
     """ get all cell value of a Excel sheet"""
     cc = Client(args.file, args.sheetname)
@@ -129,8 +130,8 @@ def do_get_all(args):
         raw_print_all(data)
 
 
-@args('-f', '--file', metavar='<FILE>',required=True, help="Excel file name")
-@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-pretty', '--pretty', action='store_true', default=False, help="pretty table for raw data")
 def do_sheet_names(args):
     """ get Excel sheet names"""
     cc = Client(args.file)
@@ -141,17 +142,18 @@ def do_sheet_names(args):
         raw_print_row(sheets)
 
 
-@args('-f', '--file', metavar='<FILE>',required=True, help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>',help="the sheetname transfer to csv")
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', help="the sheetname transfer to csv")
 def do_transfer2csv(args):
     """ transfer excel sheet to csv"""
     cc = Client(args.file, args.sheetname)
     csv_raw_data = cc.get_all()
-    write_csv_data(csv_raw_data, "%s.csv" %args.sheetname)
+    write_csv_data(csv_raw_data, "%s.csv" % args.sheetname)
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
+
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
 @args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheetname")
-@args('-pretty', '--pretty', action='store_true',default=False, help="pretty table for raw data")
+@args('-pretty', '--pretty', action='store_true', default=False, help="pretty table for raw data")
 def do_get_all_json(args):
     """ get all cell value of a Excel sheet format json"""
     cc = Client(args.file, args.sheetname)
@@ -161,31 +163,36 @@ def do_get_all_json(args):
     else:
         print(json.dumps(data))
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-r','--row',metavar='<ROW>', required=True, help='a json of row. for example [{"colname":"cell_value"}]')
+
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
+@args('-r', '--row', metavar='<ROW>', required=True, help='a json of row. for example [{"colname":"cell_value"}]')
 def do_insert_json_rows(args):
     """insert data into Excel for a row by json"""
     cc = Client(args.file, args.sheetname)
-    row=args.row.replace(" ","").replace("{","{\"").replace("}","\"}").replace(",","\",\"").replace(":","\":\"").replace("}\",\"{","},{")
+    row = args.row.replace(" ", "").replace("{", "{\"").replace("}", "\"}").replace(",", "\",\"").replace(":",
+                                                                                                          "\":\"").replace(
+        "}\",\"{", "},{")
     data = json.loads(row)
     cc.insert_json_rows(data)
     cc.save(args.file)
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-col','--colname',metavar='<COLNAME>', required=True,help='a colname of sheet')
+
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
+@args('-col', '--colname', metavar='<COLNAME>', required=True, help='a colname of sheet')
 def do_delete_col(args):
     """delete Excel sheet col by colname"""
     cc = Client(args.file, args.sheetname)
     cc.delete_col(args.colname)
     cc.save(args.file)
 
-@args('-f', '--file', metavar='<FILE>', required=True,help="Excel file name")
-@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True,help="Excel file sheet name")
-@args('-rn','--rownum',metavar='<ROWNUMBER>', help='the first col number')
-@args('-r','--row',metavar='<ROW>', required=True, help='a row of data')
-@args('-rname','--rowname',metavar='<ROWNAME>', help='the first col name')
+
+@args('-f', '--file', metavar='<FILE>', required=True, help="Excel file name")
+@args('-sn', '--sheetname', metavar='<SHEETNAME>', required=True, help="Excel file sheet name")
+@args('-rn', '--rownum', metavar='<ROWNUMBER>', help='the first col number')
+@args('-r', '--row', metavar='<ROW>', required=True, help='a row of data')
+@args('-rname', '--rowname', metavar='<ROWNAME>', help='the first col name')
 def do_update_row(args):
     """ update role data by row number start with 1 or rowname """
     cc = Client(args.file, args.sheetname)
@@ -194,4 +201,3 @@ def do_update_row(args):
     else:
         cc.update_row_by_colname(args.rowname, args.row)
     cc.save(args.file)
-
